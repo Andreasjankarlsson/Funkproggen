@@ -123,7 +123,7 @@ canInsert (x:xs) ys
     | xs == [] = [elem x ys]
     | otherwise = elem x ys : canInsert xs ys
 --validUnit :: [String] -> [(String, [Int])] -> Bool
-validUnit unit validBoard = term2 -- && term2
+validUnit unit validBoard = term1 && term2
     where
         validValues = lookups unit validBoard
         singleValidValues = concat $ filter (\p -> (length p ==1 )) validValues
