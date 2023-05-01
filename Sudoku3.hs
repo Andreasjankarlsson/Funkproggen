@@ -2,8 +2,6 @@
 --Andreas Karlsson
 --Sabah begum 
 
-module Labb3.Sudoku2 where
-
 
 rows = "ABCD"
 cols = "1234"
@@ -80,7 +78,6 @@ lookups xs ys = justifyList (map  (\x -> lookup x ys) xs) --Easier way to do the
 
 --Part 3 task1
 validSquare :: (String, Int) -> [(String, Int)] -> Bool
-validSquare (_,0) _ = True
 validSquare (square,value) board = not $ containsElem value (lookups (getPeers square) board)
 
 --Task2
@@ -89,6 +86,8 @@ validBoard board = not $ containsElem False $ map (\b -> validSquare b board) bo
 
 --Task 3 -- does not check values tough.
 --verifySudoku board = (length board == 16) && validBoard board
+
+
 
 --Task 4 - implement a data field testing a suduko.
 
@@ -109,8 +108,7 @@ digitToInt x = read [x]::Int
 colToIntList str = map (digitToInt) str
 
 validSquareNumbers::(String, Int) -> [(String, Int)] -> (String, [Int])
-validSquareNumbers (unit, 0) board = (unit, reduceList (colToIntList cols) (lookups (getPeers unit) board))
-validSquareNumbers (unit, value) board = (unit, if validSquare (unit,value) board then [value] else [])
+validSquareNumbers (unit, value) board = (unit, reduceList (colToIntList cols) (lookups (getPeers unit) board))
 
 validBoardNumbers :: [(String,Int)] -> [(String,[Int])]
 validBoardNumbers board = map (\b -> validSquareNumbers b board) board 
@@ -121,16 +119,14 @@ dublicatedElements (x:xs)
     | xs == [] = []
     | otherwise = containsElem x xs : dublicatedElements xs 
 
-containsDuplicates :: Eq a => [a] -> Bool
 containsDuplicates xs = foldr (||) False $  dublicatedElements xs
 
 canInsert:: Eq a=> [a]-> [a] -> [Bool]
 canInsert (x:xs) ys
     | xs == [] = [elem x ys]
     | otherwise = elem x ys : canInsert xs ys
-    
 
-validUnit :: Eq a => [a] -> [(a, [Int])] -> Bool
+validUnit :: [String] -> [(String, [Int])] -> Bool
 validUnit unit validBoard = term1 && term2
     where
         validValues = lookups unit validBoard
@@ -140,6 +136,22 @@ validUnit unit validBoard = term1 && term2
 
         term2 = foldr (&&) True (canInsert (colToIntList cols) totValidValues)
 
+
+--Task 5: Write a function validUnits which checks if all units in the variable unitList are valid for a Sudoku board.
+
+--validUnits:: [[String]] -> Bool
+--validUnits unitList = 
+-- Task5
+--validUnits :: [[String]] -> Bool
+--validUnits :: [(String, Int)] -> Bool
+--validUnits i = and [validUnit p (validBoardNumbers(validBoard i)) | p <- unitList]
+
+--validUnits::Bool
+validUnits validBoard = validUnit (concat unitList) validBoard
+
+-- task6
+verifySudoku board = (length board == 16) && validUnits(board)
+
         --findDuplicates (x:xs)
         --    | x == [] = []
         --    | otherwise = containsElem x xs
@@ -148,9 +160,3 @@ validUnit unit validBoard = term1 && term2
         --["A1","A2","A3"]
         --validUnit ["A1","B2"] [("A1",[1,2,3,4]),("B2",[1])]
 
-
-validUnits :: [(String, [Int])] -> Bool
-validUnits validBoard = foldr (&&) True ( map (\p -> validUnit p validBoard) (unitList))
-
-verifySudoku :: [(String, [Int])] -> Bool
-verifySudoku board = validUnits board && (length board == 16) 
