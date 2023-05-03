@@ -7,8 +7,14 @@ import Data.List (groupBy, sort,intercalate)
 import Data.Function (on)
 
 
-rows = "ABCD"
-cols = "1234"
+rows :: [Char]
+rows = ['A'..]
+cols :: [Char]
+cols = ['1'..]
+
+sudokuSize :: Int
+sudokuSize = 9
+
 containsElem :: Eq a => a -> [a] -> Bool
 containsElem _ [] = False
 containsElem elem (x:xs)
@@ -18,6 +24,7 @@ containsElem elem (x:xs)
 
 cross list1 list2 = [ [i,j] | i <- list1, j<-list2]
 
+square = cross (take sudokuSize rows) (take sudokuSize cols)
 
 --Lab 1 Task 1
 unitRow = [ cross [i] "1234" | i <-"ABCD"]
@@ -26,6 +33,7 @@ unitCol = [ cross "ABCD" [i] | i <-"1234"]
 
 unitBox = [ cross i j | i <-["AB","CD"], j <-["12","34"]]
 
+unitList :: [[[Char]]]
 unitList = unitRow ++ unitCol ++ unitBox
 
 --Lab 1 Task 2
@@ -154,7 +162,9 @@ validUnit unit validBoard = term1 && term2
 validUnits validBoard = validUnit (concat unitList) validBoard
 
 -- task6
-verifySudoku board = (length board == 16) && validUnits (board)
+verifySudoku :: [(String, Int)] -> Bool
+verifySudoku board = (length b == 16) && validUnits (b)
+    where b = validBoardNumbers board
 
         --findDuplicates (x:xs)
         --    | x == [] = []
@@ -234,8 +244,28 @@ readFromFile = do
     let concatList = concat linesOfFile
     let intList = map (\p -> read [p] ::Int) concatList
     let sudukoBoard = zip (cross rows cols) (intList)
-    return (verifySudoku (validBoardNumbers sudukoBoard))
+    return (verifySudoku sudukoBoard)
 
     
---createTableFromFile = zip (cross rows cols) (readFromFile) 
+
+sudokuChecker string = do
+    let values = map (digitToInt) (filter (\p -> p /= '|') string) 
+    let side = floor (sqrt (fromIntegral (length values)))
+    let col = take side ['A'..]
+    let row = take side ['1'..]
+    let units = [c:r:[]| c<-col, r<-row ]
+    --let sudokuBoard = zip units values
+
+    return units
+
+sudokuChecker2 :: [Char] -> Bool
+sudokuChecker2 string = verifySudoku sudokuBoard
+    where 
+        values = map (digitToInt) (filter (\p -> p /= '|') string) 
+        side = floor (sqrt (fromIntegral (length values)))
+        col = take side ['A'..]
+        row = take side ['1'..]
+        units = [c:r:[]| c<-col, r<-row ]
+        sudokuBoard = zip units values
+
 

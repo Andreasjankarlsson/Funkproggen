@@ -166,7 +166,7 @@ verifySudoku board = (length board == 16) && validUnits (board)
 
 
 exampleSudoku :: [(String,Int)]
-exampleSudoku = [("A1",4),("A2",4),("A3",3),("A4",2),("B1",3),("B2",2),("B3",1),("B4",4),("C1",4),("C2",1),("C3",2),("C4",3),("D1",2),("D2",3),("D3",4),("D4",1)]
+exampleSudoku = [("A1",4),("A2",4),("A3",3),("A4",4),("B1",4),("B2",4),("B3",4),("B4",4),("C1",4),("C2",1),("C3",2),("C4",3),("D1",2),("D2",3),("D3",4),("D4",1)]
 
 --Task 1
 giveMeANumber :: IO ()
@@ -209,8 +209,6 @@ intMatriceToStringList list = map (\p-> intListToString p) list
 
 stringListToString :: [String] -> String
 stringListToString list = unlines list
-
-
 
 
 findFaultyUnits :: [(String, Int)] -> [(String, [Int])]

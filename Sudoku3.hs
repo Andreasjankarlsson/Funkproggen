@@ -129,11 +129,13 @@ canInsert (x:xs) ys
 validUnit :: [String] -> [(String, [Int])] -> Bool
 validUnit unit validBoard = term1 && term2
     where
+        --Term 1
         validValues = lookups unit validBoard
         singleValidValues = concat $ filter (\p -> (length p ==1 )) validValues
         term1 = containsDuplicates singleValidValues
-        totValidValues = concat validValues
 
+        --term2 
+        totValidValues = concat validValues
         term2 = foldr (&&) True (canInsert (colToIntList cols) totValidValues)
 
 
